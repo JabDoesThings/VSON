@@ -1,0 +1,111 @@
+@startuml
+
+class GeoLocation {
+  +double : longitude
+  +double : latitude
+}
+
+class IntegerQuantity {
+    +int : value
+    +float : uncertainty
+    +float : lowerUncertainty
+    +float : upperUncertainty
+    +float : confidenceLevel
+}
+
+class RealQuantity {
+    +float : value
+    +float : uncertainty
+    +float : lowerUncertainty
+    +float : upperUncertainty
+    +float : confidenceLevel
+}
+
+RealQuantity . IntegerQuantity
+
+class VSON {
+  +Volcano[] : volcanoes
+}
+
+class Volcano {
+  +String : id
+  +String : name
+  +GeoLocation : location
+  +double : peakAltitude
+  +VOLCANO_TYPE : type
+  +ELEVATION_PROFILE : elevationProfile
+  +VolcanoStatus[] : alerts
+  +VolcanicEvent[] : events
+  +VolcanicMeasurement[] : measurements
+}
+
+class VolcanicEvent {
+  +String : id
+  +EVENT_TYPE: type
+  +date : startTime
+  +date : endTime
+  +date : updateTime
+}
+
+class VolcanicEruptionEvent {
+  +ERUPTION_TYPE : eruptionType
+}
+
+class VolcanicMeasurement {
+  +MEASUREMENT_TYPE : type
+  +RealQuantity : value
+}
+
+class VolcanoStatus {
+  +ALERT_LEVEL : alertLevel
+  +Date : alertTime
+}
+
+enum MEASUREMENT_TYPE {
+
+}
+
+enum ALERT_LEVEL {
+  NORMAL
+  ADVISORY
+  WATCH
+  WARNING
+}
+
+/' ENUM CONSTANTS '/
+enum ELEVATION_PROFILE {
+  UNDERWATER
+  ABOVE_WATER
+}
+
+enum VOLCANO_TYPE {
+  COMPOSITE
+  FISSURE
+  LAVA_DOME
+  SHIELD
+  STRATO
+}
+
+enum EVENT_TYPE {
+  ERUPTION
+  LANDSLIDE
+  TREMOR
+}
+
+VSON <-- Volcano
+
+Volcano <- VolcanicEvent
+VolcanoStatus -> Volcano
+
+Volcano <-- ELEVATION_PROFILE
+Volcano <-- VOLCANO_TYPE
+
+ALERT_LEVEL -> VolcanoStatus
+
+VolcanicEvent <- EVENT_TYPE
+VolcanicEvent <|-- VolcanicEruptionEvent
+
+Volcano <-- VolcanicMeasurement
+VolcanicMeasurement <-- MEASUREMENT_TYPE
+
+@enduml
